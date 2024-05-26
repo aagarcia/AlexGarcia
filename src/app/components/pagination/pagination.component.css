@@ -14,3 +14,39 @@
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
+.paginationelement {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.paginationelement button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.paginationelement button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.paginationelement button:not(:disabled):hover {
+    background-color: #0056b3;
+}
+
+.paginationelement span {
+    font-size: 18px;
+    margin: 0 10px;
+}

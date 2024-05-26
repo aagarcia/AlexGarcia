@@ -17,19 +17,18 @@ export class ConsultaComponent implements OnInit {
 
   productos: IProducto[] = [];
   resultadosBusqueda: IProducto[] = [];
-  productosPorPagina: number = 5;
+  
 
   constructor(private productService: ProductoService){}
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe((response) => {
       this.productos = response.data;
-      this.resultadosBusqueda = response.data;
+      this.resultadosBusqueda = this.productos;
     });
   }
 
   handleResultados(resultados: IProducto[]): void {
     this.resultadosBusqueda = resultados;
   }
-
 }

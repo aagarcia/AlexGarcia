@@ -18,7 +18,6 @@ export class SearchComponent {
   searchTerm: string = '';
 
   buscarProductos(): void {
-    console.log(`searchTerm: ${this.searchTerm}`);
     if (this.searchTerm) {
       const resultadosBusqueda = this.productos.filter(producto =>
         producto.name.includes(this.searchTerm)

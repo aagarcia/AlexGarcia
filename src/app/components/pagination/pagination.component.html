@@ -1,5 +1,10 @@
 <div class="pagination">
-    <span>{{ totalItems }} Resultados</span>
+    <span>{{ elementoPorPagina }} Resultados</span>
+    <div class="paginationelement">
+        <button >Anterior</button>
+        <span>Página {{paginaActual}}</span>
+        <button >Siguiente</button>
+    </div>
     <select>
         <option value="5">5</option>
         <option value="10">10</option>

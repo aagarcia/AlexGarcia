@@ -22,6 +22,9 @@ export class TableComponent implements OnChanges {
     dropdownOpenProductId: string | null = null;
     isPopupVisible: boolean = false;
     productoAEliminar: IProducto | null = null;
+    productosPorPagina: number = 5;
+    paginaActual: number = 1;
+    totalPaginas: number = 1;
 
     constructor (private router: Router, private productoService: ProductoService) { }
 
