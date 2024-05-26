@@ -1,0 +1,30 @@
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+}
+
+.icon-button .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-button .label {
+  display: none;
+}
+
+.icon-button:hover {
+  background-color: #0056b3;
+}
+
+.icon-button:focus {
+  outline: none;
+}

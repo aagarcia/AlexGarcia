@@ -1,0 +1,85 @@
+<div class="form-container">
+    <h2>Formulario de Registro</h2>
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+        <div class="element-form">
+            <label for="id">ID</label>
+            <input type="text" 
+                   id="id" 
+                   formControlName="id" 
+                   [ngClass]="{'error': submitted && f['id'].errors }">
+            <div *ngIf="submitted && f['id'].errors">
+                <span *ngIf="f['id'].errors['required']" class="error">El campo ID es obligatorio.</span>
+                <span *ngIf="f['id'].errors['minlength']" class="error">Debe tener un minimo de 3 caracteres.</span>
+                <span *ngIf="f['id'].errors['maxlength']" class="error">Debe tener un maximo de 10 caracteres.</span>
+                <span *ngIf="f['id'].errors['idExists']" class="error">El ID ya existe.</span>
+            </div>
+        </div>
+
+        <div class="element-form">
+            <label for="nombre">Nombre</label>
+            <input type="text" 
+                   id="nombre" 
+                   formControlName="nombre"
+                   [ngClass]="{'error': submitted && f['nombre'].errors }">
+            <div *ngIf="submitted && f['nombre'].errors">
+                <span *ngIf="f['nombre'].errors['required']" class="error">El campo nombre es obligatorio.</span>
+                <span *ngIf="f['nombre'].errors['minlength']" class="error">Debe tener un minimo de 5 caracteres.</span>
+                <span *ngIf="f['nombre'].errors['maxlength']" class="error">Debe tener un maximo de 100 caracteres.</span>
+            </div>
+        </div>
+
+        <div class="element-form">
+            <label for="descripcion">Descripción</label>
+            <input type="text" 
+                   id="descripcion" 
+                   formControlName="descripcion"
+                   [ngClass]="{'error': submitted && f['descripcion'].errors }">
+            <div *ngIf="submitted && f['descripcion'].errors">
+                <span *ngIf="f['descripcion'].errors['required']" class="error">El campo descripcion es obligatorio.</span>
+                <span *ngIf="f['descripcion'].errors['minlength']" class="error">Debe tener un minimo de 10 caracteres.</span>
+                <span *ngIf="f['descripcion'].errors['maxlength']" class="error">Debe tener un maximo de 200 caracteres.</span>
+            </div>
+        </div>
+
+        <div class="element-form">
+            <label for="logo">Logo</label>
+            <input type="text" 
+                   id="logo" 
+                   formControlName="logo"
+                   [ngClass]="{'error': submitted && f['logo'].errors }">
+            <div *ngIf="submitted && f['logo'].errors && f['logo'].errors['required']">
+                <span class="error">El campo logo es obligatorio.</span>
+            </div>
+        </div>
+
+        <div class="element-form">
+            <label for="fechaLiberacion">Fecha de Liberación</label>
+            <input type="date" 
+                   placeholder="DD/MM/YYYY"
+                   id="fechaLiberacion" 
+                   formControlName="fechaLiberacion"
+                   [ngClass]="{'error': submitted && f['fechaLiberacion'].errors }">
+            <div *ngIf="submitted && f['fechaLiberacion'].errors">
+                <span *ngIf="f['fechaLiberacion'].errors['required']" class="error">El campo fechaLiberacion es obligatorio.</span>
+                <span *ngIf="f['fechaLiberacion'].errors['futureOrTodayDate']" class="error">La fecha debe ser hoy o una fecha futura.</span>
+            </div>
+        </div>
+
+        <div class="element-form">
+            <label for="fechaRevision">Fecha de Revisión</label>
+            <input type="text" id="fechaRevision" formControlName="fechaRevision">
+        </div>
+
+        <div class="button-container">
+            <button type="submit">Enviar</button>
+            <button type="button" (click)="onReset()">Reiniciar</button>
+        </div>
+    </form>
+</div>
+
+<div *ngIf="showPopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" (click)="closePopup()">&times;</span>
+    <p>{{ popupMessage }}</p>
+  </div>
+</div>

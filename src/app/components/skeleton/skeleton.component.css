@@ -1,0 +1,27 @@
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-header,
+.skeleton-body,
+.skeleton-footer {
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.skeleton-header {
+  height: 38.4px;
+  width: 100%;
+}
+
+.skeleton-body {
+  height: 64.4px;
+  width: 100%;
+}
+
+.skeleton-footer {
+  height: 28.4px;
+  width: 100%;
+}
