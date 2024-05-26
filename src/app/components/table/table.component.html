@@ -10,6 +10,7 @@
                 <th>Descripción</th>
                 <th>Fecha de liberación</th>
                 <th>Fecha de reestructuración</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody *ngIf="productos.length > 0">
@@ -17,15 +18,32 @@
                 <td><img src="assets/{{ producto.logo }}" alt="Producto Logo"></td>
                 <td>{{ producto.name }}</td>
                 <td>{{ producto.description }}</td>
-                <td>{{ producto.date_release }}</td>
-                <td>{{ producto.date_revision }}</td>
+                <td>{{ formatDateToString(producto.date_release) }}</td>
+                <td>{{ formatDateToString(producto.date_revision) }}</td>
+                <td>
+                    <div class="dropdown">
+                        <button (click)="toggleDropdown(producto.id)" class="dropdown-button">⋮</button>
+                        <div class="dropdown-menu" [class.show]="isDropdownOpen(producto.id)">
+                            <button (click)="modifyProduct(producto.id)">Modificar</button>
+                            <button (click)="confirmDeleteProduct(producto)">Eliminar</button>
+                        </div>
+                    </div>
+                </td>
             </tr>
         </tbody>
         <tbody *ngIf="productos.length === 0">
             <tr>
-                <td colspan="5">No hay datos disponibles</td>
+                <td colspan="6">No hay datos disponibles</td>
             </tr>
         </tbody>
     </table>
     <app-pagination [totalItems]="totalItems"></app-pagination>
+
+    <div class="popup" [class.show]="isPopupVisible">
+        <div class="popup-content">
+            <h3>¿Estás seguro de eliminar el producto {{ productoAEliminar?.name }}?</h3>
+            <button (click)="closePopup()">Cancelar</button>
+            <button (click)="deleteProduct()">Confirmar</button>
+        </div>
+    </div>
 </div>

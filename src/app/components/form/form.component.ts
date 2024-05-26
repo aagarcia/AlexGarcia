@@ -30,23 +30,70 @@ export class FormComponent implements OnInit {
   producto: IProducto = {} as IProducto;
   showPopup: boolean = false;
   popupMessage: string = '';
+  isUpdate: boolean = false;
 
   constructor(private formBuilder: FormBuilder, 
               private activatedRoute: ActivatedRoute,
               private productoService: ProductoService,
               private router: Router) {
-    this.id = this.activatedRoute.snapshot.params['id'] === undefined ? '' : this.activatedRoute.snapshot.params['id'];
-    console.log(`Received id (constructor): ${this.id}`);
   }
 
   ngOnInit(): void {
+
+    this.activatedRoute.params.subscribe(params => {
+      this.id = params['id'] === undefined ? '' : params['id'];
+      if(this.id !== '') {
+        this.productoService.getProduct(this.id).subscribe({
+          next: (data) => {
+            this.producto = data;
+            this.isUpdate = true;
+            this.updateDataInit();
+          },
+          error: (error) => {
+            console.error(`${error.name} - ${error.message}`);
+            this.router.navigate(['/']);
+          }
+        });
+      } else {
+        this.insertDataInit();
+      }
+    });
+
+    this.setFechaRevision();
+  }
+
+  updateDataInit(): void {
+    this.registroForm = this.formBuilder.group({
+      id: [{value: this.producto.id, disabled: true}],
+      nombre: [this.producto.name, 
+               [Validators.required,
+                Validators.minLength(5),
+                Validators.maxLength(100)]
+      ],
+      descripcion: [this.producto.description, 
+                    [Validators.required,
+                     Validators.minLength(10),
+                     Validators.maxLength(200)]
+      ],
+      logo: [this.producto.logo, 
+             [Validators.required]
+      ],
+      fechaLiberacion: [this.convertirDatetoString(this.producto.date_release), 
+                        [Validators.required,
+                         futureOrTodayDateValidator()],
+      ],
+      fechaRevision: [{value: this.convertirDate(this.producto.date_revision), disabled: true}, [Validators.required]],
+    });
+    this.setFechaRevision();
+  }
+
+  insertDataInit(): void {
     this.registroForm = this.formBuilder.group({
       id: ['', 
            [Validators.required,
             Validators.minLength(3),
             Validators.maxLength(10)],
-           [idValidator(this.productoService)]
-      ],
+           [idValidator(this.productoService)]],
       nombre: ['', 
                [Validators.required,
                 Validators.minLength(5),
@@ -67,6 +114,10 @@ export class FormComponent implements OnInit {
       fechaRevision: [{value: '', disabled: true}, [Validators.required]],
     });
 
+    this.setFechaRevision();
+  }
+  
+  setFechaRevision(): void {
     this.registroForm.get('fechaLiberacion')?.valueChanges.subscribe(value => {
       if (value) {
         const selectedDate = new Date(value);
@@ -83,8 +134,17 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+    
+    if(this.isUpdate) {
+      this.updateData();
+    } else {
+      this.insertData();
+    }
+    
+  }
 
+  insertData(): void {
+    this.submitted = true;
     this.registroForm.get('fechaRevision')?.enable();
 
     if (this.registroForm.invalid) {
@@ -117,6 +177,53 @@ export class FormComponent implements OnInit {
     });
   }
 
+  updateData(): void {
+    this.submitted = true;
+    this.registroForm.get('fechaRevision')?.enable();
+
+    if (this.registroForm.invalid) {
+      this.registroForm.get('fechaRevision')?.disable();
+      return;
+    }
+
+    this.registroForm.value.fechaRevision = this.convertirFecha(this.registroForm.value.fechaRevision);
+
+    this.producto = {
+      id: this.producto.id,
+      name: this.registroForm.value.nombre,
+      description: this.registroForm.value.descripcion,
+      logo: this.registroForm.value.logo,
+      date_release: this.parseDateString(this.registroForm.value.fechaLiberacion),
+      date_revision: this.parseDateString(this.registroForm.value.fechaRevision),
+    };
+
+    this.productoService.putProducts(this.producto.id, this.producto).subscribe({
+      next: (data) => {
+        this.submitted = false;
+        this.registroForm.reset();
+        this.registroForm.get('fechaRevision')?.disable();
+        this.showPopupMessage(data.message, true);
+      },
+      error: (error) => {
+        this.registroForm.get('fechaRevision')?.disable();
+        this.showPopupMessage(error.message, false);
+      }
+    });
+  }
+
+  parseDateString (dateString: string): Date {
+    const dateParts = dateString.split('-');
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // Adjust month index for 0-based indexing
+    const day = parseInt(dateParts[2], 10);
+
+    const localDate = new Date(year, month, day);
+    const timezoneOffset = localDate.getTimezoneOffset() * 60 * 1000;
+    const utcDate = new Date(localDate.getTime() + timezoneOffset);
+
+    return utcDate;
+  };
+
   onReset(): void {
     this.submitted = false;
     this.registroForm.reset();
@@ -140,5 +247,25 @@ export class FormComponent implements OnInit {
 
   closePopup(): void {
     this.showPopup = false;
+  }
+
+  convertirDatetoString(referenceDate: Date): string {
+    const date = new Date(referenceDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, así que sumamos 1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  convertirDate(referenceDate: Date): string {
+    const date = new Date(referenceDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, así que sumamos 1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
   }
 }

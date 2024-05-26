@@ -1,5 +1,5 @@
 <div class="container">
     <app-header></app-header>
     <app-search [productos]="productos" (resultados)="handleResultados($event)"></app-search>
-    <app-table [productos]="resultadosBusqueda"></app-table>
+    <app-table [productos]="resultadosBusqueda" (resultados)="handleResultados($event)"></app-table>
 </div>
