@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Prueba Angular Devsu - Alex Garc&iacute;a Arias</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="prueba-angular-devsu---alex-garcía-arias">Prueba Angular Devsu - Alex García Arias</h1>
+<p>Prueba de Angular para la empresa Devsu para aplicar al cargo de Angular Developer</p>
+<h2 id="resumen-de-lo-realizado">Resumen de lo realizado</h2>
+<p>Se realizo todo el tema de crud en Angular de lo indicado en el requerimiento. Solo se quedo pendiente el tema de test unitarios y la paginación de la tabla.</p>
+<h2 id="elementos-utilizados">Elementos utilizados</h2>
+<ul>
+<li><a href="https://angular.io/">Angular 16</a></li>
+<li><a href="https://www.typescriptlang.org/">Typescript 5</a></li>
+<li>El codigo esta en el repositorio de GitHub <a href="https://github.com/aagarcia/AlexGarcia">AlexGarcia</a></li>
+</ul>
+<h2 id="comentarios">Comentarios</h2>
+<p>Al utilizar el servicio que enviaron para la prueba, se encontro que no esta habilitado el tema de <strong>CORS</strong>. Donde lo habilite para poder realizar las peticiones HTTP. Que esta en el archivo main.ts.</p>
+<pre><code>// Crea la configuración de CORS
+const corsOptions = {
+    origin: 'http://localhost:4200', // Permitir solicitudes solo desde este origen
+    optionsSuccessStatus: 200 
+};
+
+// creates express app, registers all controller routes and returns you express app instance
+const app = createExpressServer({
+    cors: corsOptions, // Configura CORS
+    routePrefix: &quot;/bp&quot;, 
+
+    controllers: [
+        __dirname + &quot;/controllers/*{.js,.ts}&quot;,
+    ], // we specify controllers we want to use
+});
+</code></pre>
+<h2 id="instalación">Instalación</h2>
+<pre><code>npm install
+</code></pre>
+<h2 id="ejecución">Ejecución</h2>
+<pre><code>ng serve -o
+</code></pre>
+
+            
+            
+        </body>
+        </html>

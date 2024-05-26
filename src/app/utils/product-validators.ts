@@ -1,7 +1,7 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { ProductoService } from '../../services/producto.service';
+import { ProductoService } from '../services/producto.service';
 
 export function idValidator(productoService: ProductoService): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {

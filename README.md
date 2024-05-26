@@ -1,27 +1,42 @@
-# AlexGarcia
+# Prueba Angular Devsu - Alex García Arias
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.1.
+Prueba de Angular para la empresa Devsu para aplicar al cargo de Angular Developer
 
-## Development server
+## Resumen de lo realizado
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Se realizo todo el tema de crud en Angular de lo indicado en el requerimiento. Solo se quedo pendiente el tema de test unitarios y la paginación de la tabla.
 
-## Code scaffolding
+## Elementos utilizados
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- [Angular 16](https://angular.io/)
+- [Typescript 5](https://www.typescriptlang.org/)
+- El codigo esta en el repositorio de GitHub [AlexGarcia](https://github.com/aagarcia/AlexGarcia)
 
-## Build
+## Comentarios
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Al utilizar el servicio que enviaron para la prueba, se encontro que no esta habilitado el tema de **CORS**. Donde lo habilite para poder realizar las peticiones HTTP. Que esta en el archivo main.ts.
 
-## Running unit tests
+    // Crea la configuración de CORS
+    const corsOptions = {
+        origin: 'http://localhost:4200', // Permitir solicitudes solo desde este origen
+        optionsSuccessStatus: 200 
+    };
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    // creates express app, registers all controller routes and returns you express app instance
+    const app = createExpressServer({
+        cors: corsOptions, // Configura CORS
+        routePrefix: "/bp", 
 
-## Running end-to-end tests
+        controllers: [
+            __dirname + "/controllers/*{.js,.ts}",
+        ], // we specify controllers we want to use
+    });
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+## Instalación
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+    npm install
+
+## Ejecución
+
+    ng serve -o

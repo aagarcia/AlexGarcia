@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, 
          FormControl, FormGroup, 
-         ReactiveFormsModule, Validators } from '@angular/forms';
+         ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
-import { idValidator } from './product-validators';
-import { futureOrTodayDateValidator } from './custom-validators';
+import { idValidator } from '../../utils/product-validators';
+import { convertirDate, convertirDatetoString, 
+         convertirFecha, futureOrTodayDateValidator, 
+         parseDateString } from '../../utils/custom-validators';
 import { IProducto } from '../../interfaces/producto.interface';
 
 @Component({
@@ -31,6 +33,24 @@ export class FormComponent implements OnInit {
   showPopup: boolean = false;
   popupMessage: string = '';
   isUpdate: boolean = false;
+  IDValidator: ValidatorFn[] = [Validators.required,
+                                Validators.minLength(3),
+                                Validators.maxLength(10)];
+
+  nombraValidator: ValidatorFn[] = [Validators.required,
+                                    Validators.minLength(5),
+                                    Validators.maxLength(100)];
+
+  descripcionValidator: ValidatorFn[] = [Validators.required,
+                                         Validators.minLength(10),
+                                         Validators.maxLength(200)];
+
+  logoValidator: ValidatorFn[] = [Validators.required];
+
+  fechaLiberacionValidator: ValidatorFn[] = [Validators.required,
+                                             futureOrTodayDateValidator()];
+
+  requiredValidator: ValidatorFn[] = [Validators.required];
 
   constructor(private formBuilder: FormBuilder, 
               private activatedRoute: ActivatedRoute,
@@ -62,61 +82,34 @@ export class FormComponent implements OnInit {
     this.setFechaRevision();
   }
 
-  updateDataInit(): void {
-    this.registroForm = this.formBuilder.group({
-      id: [{value: this.producto.id, disabled: true}],
-      nombre: [this.producto.name, 
-               [Validators.required,
-                Validators.minLength(5),
-                Validators.maxLength(100)]
-      ],
-      descripcion: [this.producto.description, 
-                    [Validators.required,
-                     Validators.minLength(10),
-                     Validators.maxLength(200)]
-      ],
-      logo: [this.producto.logo, 
-             [Validators.required]
-      ],
-      fechaLiberacion: [this.convertirDatetoString(this.producto.date_release), 
-                        [Validators.required,
-                         futureOrTodayDateValidator()],
-      ],
-      fechaRevision: [{value: this.convertirDate(this.producto.date_revision), disabled: true}, [Validators.required]],
-    });
-    this.setFechaRevision();
-  }
-
   insertDataInit(): void {
     this.registroForm = this.formBuilder.group({
-      id: ['', 
-           [Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(10)],
+      id: ['', this.IDValidator,
            [idValidator(this.productoService)]],
-      nombre: ['', 
-               [Validators.required,
-                Validators.minLength(5),
-                Validators.maxLength(100)]
-      ],
-      descripcion: ['', 
-                    [Validators.required,
-                     Validators.minLength(10),
-                     Validators.maxLength(200)]
-      ],
-      logo: ['', 
-             [Validators.required]
-      ],
-      fechaLiberacion: ['', 
-                        [Validators.required,
-                         futureOrTodayDateValidator()],
-      ],
-      fechaRevision: [{value: '', disabled: true}, [Validators.required]],
+      nombre: ['', this.nombraValidator],
+      descripcion: ['', this.descripcionValidator],
+      logo: ['', this.logoValidator],
+      fechaLiberacion: ['', this.fechaLiberacionValidator],
+      fechaRevision: [{value: '', disabled: true}, this.requiredValidator],
     });
 
     this.setFechaRevision();
   }
   
+  updateDataInit(): void {
+    this.registroForm = this.formBuilder.group({
+      id: [{value: this.producto.id, disabled: true}],
+      nombre: [this.producto.name, this.nombraValidator],
+      descripcion: [this.producto.description, this.descripcionValidator],
+      logo: [this.producto.logo, this.logoValidator],
+      fechaLiberacion: [convertirDatetoString(this.producto.date_release), 
+                        this.fechaLiberacionValidator],
+      fechaRevision: [{value: convertirDate(this.producto.date_revision), disabled: true}, 
+                      this.requiredValidator],
+    });
+    this.setFechaRevision();
+  }
+
   setFechaRevision(): void {
     this.registroForm.get('fechaLiberacion')?.valueChanges.subscribe(value => {
       if (value) {
@@ -134,6 +127,16 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit(): void {
+
+    this.submitted = true;
+    this.registroForm.get('fechaRevision')?.enable();
+
+    if (this.registroForm.invalid) {
+      this.registroForm.get('fechaRevision')?.disable();
+      return;
+    }
+
+    this.registroForm.value.fechaRevision = convertirFecha(this.registroForm.value.fechaRevision);
     
     if(this.isUpdate) {
       this.updateData();
@@ -144,16 +147,6 @@ export class FormComponent implements OnInit {
   }
 
   insertData(): void {
-    this.submitted = true;
-    this.registroForm.get('fechaRevision')?.enable();
-
-    if (this.registroForm.invalid) {
-      this.registroForm.get('fechaRevision')?.disable();
-      return;
-    }
-
-    this.registroForm.value.fechaRevision = this.convertirFecha(this.registroForm.value.fechaRevision);
-
     this.producto = {
       id: this.registroForm.value.id,
       name: this.registroForm.value.nombre,
@@ -178,23 +171,13 @@ export class FormComponent implements OnInit {
   }
 
   updateData(): void {
-    this.submitted = true;
-    this.registroForm.get('fechaRevision')?.enable();
-
-    if (this.registroForm.invalid) {
-      this.registroForm.get('fechaRevision')?.disable();
-      return;
-    }
-
-    this.registroForm.value.fechaRevision = this.convertirFecha(this.registroForm.value.fechaRevision);
-
     this.producto = {
       id: this.producto.id,
       name: this.registroForm.value.nombre,
       description: this.registroForm.value.descripcion,
       logo: this.registroForm.value.logo,
-      date_release: this.parseDateString(this.registroForm.value.fechaLiberacion),
-      date_revision: this.parseDateString(this.registroForm.value.fechaRevision),
+      date_release: parseDateString(this.registroForm.value.fechaLiberacion),
+      date_revision: parseDateString(this.registroForm.value.fechaRevision),
     };
 
     this.productoService.putProducts(this.producto.id, this.producto).subscribe({
@@ -211,27 +194,9 @@ export class FormComponent implements OnInit {
     });
   }
 
-  parseDateString (dateString: string): Date {
-    const dateParts = dateString.split('-');
-    const year = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10) - 1; // Adjust month index for 0-based indexing
-    const day = parseInt(dateParts[2], 10);
-
-    const localDate = new Date(year, month, day);
-    const timezoneOffset = localDate.getTimezoneOffset() * 60 * 1000;
-    const utcDate = new Date(localDate.getTime() + timezoneOffset);
-
-    return utcDate;
-  };
-
   onReset(): void {
     this.submitted = false;
     this.registroForm.reset();
-  }
-
-  convertirFecha(fecha: string): string {
-    const partes = fecha.split('/');
-    return `${partes[2]}-${partes[1]}-${partes[0]}`;
   }
 
   showPopupMessage(message: string, redirect: boolean): void {
@@ -247,25 +212,5 @@ export class FormComponent implements OnInit {
 
   closePopup(): void {
     this.showPopup = false;
-  }
-
-  convertirDatetoString(referenceDate: Date): string {
-    const date = new Date(referenceDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, así que sumamos 1
-    const day = String(date.getDate()).padStart(2, '0');
-
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-
-  convertirDate(referenceDate: Date): string {
-    const date = new Date(referenceDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, así que sumamos 1
-    const day = String(date.getDate()).padStart(2, '0');
-
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
   }
 }
